@@ -1,0 +1,3 @@
+{% for j in cats %}
+  <li class="list-group-item"><a href="{{ j.get_absolute_url }}">{{ j.name }}</a></li>
+    {% endfor %}
