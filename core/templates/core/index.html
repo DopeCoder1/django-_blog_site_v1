@@ -10,17 +10,14 @@
   <div class="container">
     <div class="row">
       <div class=" col-md-8 col-md-10 mx-auto">
-        <div class="site-heading">
-          <h3 class=" site-heading my-4 mt-3 text-black"> Welcome to My Blog ✍️ </h3>
-          <p class="text-dark">Django is Awesome ✨✨✨ </p>
-        </div>
+        <br>
       </div>
     </div>
        <ul class="list-group">
-{% for j in cats %}
+           {% for j in cats %}
   <li class="list-group-item"><a href="{{ j.get_absolute_url }}">{{ j.name }}</a></li>
     {% endfor %}
-</ul>
+       </ul>
   </div>
 </header>
 <div class="container">

@@ -1,22 +1,32 @@
+from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, FormView
 from .models import *
 from .forms import *
 from .utils import *
 
 
-# Create your views here.
-# def home_page(request):
-#     post = Blog.objects.all()
-#     cats = Category.objects.all()
-#     context = {
-#         'post': post,
-#         'cats': cats,
-#     }
-#     return render(request, 'core/index.html', context)
+# home_page with paginator
+def home_page(request):
+    post = Blog.objects.all()
+    cats = Category.objects.all()
+    paginator = Paginator(Blog, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context = {
+        'post': post,
+        'cats': cats,
+        'page_obj': page_obj,
+    }
+    return render(request, 'core/index.html', context)
+
+
 #
 #
 # def post_details(request, post_slug):
@@ -55,6 +65,7 @@ class HomeView(DataMixin, ListView):
     template_name = 'core/index.html'
     context_object_name = "post"
     post = Blog.objects.all()
+    paginate_by = 3
 
     # cats = Category.objects.all()
     # extra_context = {"cats": cats}
@@ -109,3 +120,52 @@ class AddPageView(LoginRequiredMixin, DataMixin, CreateView):
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context()
         return dict(list(context.items()) + list(c_def.items()))
+
+
+class RegisterUser(DataMixin, CreateView):
+    form_class = MyForm
+    template_name = 'core/register.html'
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('index')
+
+class LoginUser(DataMixin, LoginView):
+    form_class = LoginForm
+    template_name = 'core/login.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def get_success_url(self):
+        return reverse_lazy('index')
+
+
+def LogoutUser(request):
+    logout(request)
+    return redirect('login')
+
+class ContactFormView(DataMixin, FormView):
+    form_class = ContactForm
+    template_name = 'core/contact.html'
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context()
+        return dict(list(context.items()) + list(c_def.items()))
+
+    def form_valid(self, form):
+        print(form.cleaned_data)
+        return redirect('index')
+
