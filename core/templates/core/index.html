@@ -1,0 +1,44 @@
+
+{% extends "core/base.html" %}
+{% block title %}
+{{ title }}
+{% endblock title %}
+{% block content %}
+
+<header class="masthead">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class=" col-md-8 col-md-10 mx-auto">
+        <br>
+      </div>
+    </div>
+       <ul class="list-group">
+           {% for j in cats %}
+  <li class="list-group-item"><a href="{{ j.get_absolute_url }}">{{ j.name }}</a></li>
+    {% endfor %}
+       </ul>
+  </div>
+</header>
+<div class="container">
+  <div class="row">
+    <!-- Blog Entries Column -->
+    <div class="col-md-8 mt-3 left">
+      {% for ps in post %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="card-title">{{ ps.title }}</h2>
+          <p class="card-text text-muted h6">{{ ps.time_create }} | {{ ps.time_update}} </p>
+            <img src="{{ ps.photo.url }}" alt="" width="180px">
+          <p class="card-text">{{ps.content|slice:":200"}}</p>
+          <a href="{{ ps.get_absolute_url }}" class="btn btn-primary">Read More &rarr;</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+{#    {% block sidebar %} #}
+{#    {% include 'sidebar.html' %} #}
+{#    {% endblock sidebar %}#}
+  </div>
+</div>
+{%endblock%}

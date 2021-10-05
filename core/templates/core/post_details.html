@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+{% block title %}
+ 
+{% endblock title %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 card mb-4  mt-3 left  top">
+      <div class="card-body">
+        <h1>{{ post.title }}</h1>
+        <p class=" text-muted">{{ post.time_create }} | {{ post.time_update }}</p>
+          <img src="{{ post.photo.url }}" alt="" width="180px">
+        <p class="card-text ">{{ post.content | safe }}</p>
+      </div>
+    </div>
+{#    {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}#}
+  </div>
+</div>
+
+{% endblock content %}
